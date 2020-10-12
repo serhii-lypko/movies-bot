@@ -1,0 +1,21 @@
+{
+  "name": "ns_movies_wishlist_bot",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kukloeb21",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "lodash": "^4.17.20",
+    "mongoose": "^5.10.9",
+    "morgan": "^1.10.0",
+    "telegraf": "^3.38.0"
+  }
+}
