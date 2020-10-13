@@ -15,8 +15,6 @@ import WizardScene from 'telegraf/scenes/wizard/index.js';
 
 dotenv.config();
 
-// BaseFHD
-
 /* - - - - - - - - - - - - - - - - - - - - */
 
 const noteSchema = new mongoose.Schema({
@@ -43,7 +41,7 @@ mongoose.connect(process.env.DB_URL, connectionParams)
 /* - - - - - - - - - - - - - - - - - - - - */
 
 
-
+// TODO: fkj
 
 
 const botWelcomeMessage = `Hey you!`;
