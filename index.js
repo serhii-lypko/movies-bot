@@ -134,7 +134,6 @@ bot.action(/delete/, deleteAction);
 async function showMovies(ctx) {
   try {
     const movies = await Movie.find();
-    ctx.reply('----------')
     return movies.forEach(({ label }) => ctx.reply(label))
   } catch {
     ctx.reply('Could not make an action');
