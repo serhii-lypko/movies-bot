@@ -3,11 +3,6 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import WizardScene from 'telegraf/scenes/wizard/index.js';
 
-// const telegraf = require('telegraf');
-// const mongoose = require('mongoose');
-// const dotenv = require('dotenv');
-// const WizardScene = require('telegraf/scenes/wizard')
-
 // TODO: have some kind of priority or willing status
 // TODO: show topbar status while loading
 
@@ -30,19 +25,10 @@ const connectionParams={
 }
 
 mongoose.connect(process.env.DB_URL, connectionParams)
-  .then(() => {
-    // console.log('Connected to database')
-  })
-  .catch((err) => {
-    console.error(`Error connecting to the database. \n${err}`);
-  })
-
+  .then(() => console.log('Connected to database'))
+  .catch((err) => console.error(`Error connecting to the database. \n${err}`))
 
 /* - - - - - - - - - - - - - - - - - - - - */
-
-
-// TODO: fkj
-
 
 const botWelcomeMessage = `Hey you!`;
 const botHelpMessage = `Это еще что... если хочешь отменить действие добавления - просто напиши "Отмена" или "Cancel"`;
@@ -136,8 +122,6 @@ function exposeMovie(ctx, next) {
 const deleteAction = async (ctx) => {
   console.log(ctx.movie);
   console.log('-----------');
-
-
 };
 
 bot.action(/delete/, exposeMovie, deleteAction);
