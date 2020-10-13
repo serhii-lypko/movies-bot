@@ -15,14 +15,13 @@ import WizardScene from 'telegraf/scenes/wizard/index.js';
 
 dotenv.config();
 
+// BaseFHD
 
 /* - - - - - - - - - - - - - - - - - - - - */
 
-const noteSchema = new mongoose.Schema(
-  {
-    label: String
-  }
-);
+const noteSchema = new mongoose.Schema({
+  label: String
+});
 
 const Note = mongoose.model('note', noteSchema);
 
