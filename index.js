@@ -1,15 +1,12 @@
-// import telegraf from 'telegraf';
-// import mongoose from 'mongoose';
+import telegraf from 'telegraf';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import WizardScene from 'telegraf/scenes/wizard/index.js';
 
-// import dotenv from 'dotenv';
-
-// import WizardScene from 'telegraf/scenes/wizard/index.js';
-
-const telegraf = require('telegraf');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-
-const WizardScene = require('telegraf/scenes/wizard')
+// const telegraf = require('telegraf');
+// const mongoose = require('mongoose');
+// const dotenv = require('dotenv');
+// const WizardScene = require('telegraf/scenes/wizard')
 
 // TODO: have some kind of priority or willing status
 // TODO: show topbar status while loading
