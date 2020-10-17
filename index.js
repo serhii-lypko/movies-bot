@@ -5,13 +5,18 @@ import WizardScene from 'telegraf/scenes/wizard/index.js';
 
 const { Extra, session, Stage, Markup, BaseScene } = telegraf;
 
-// TODO: formattin text -> red color for delete actions and so on
+/* - - - - - - - - - - - - - - - - - - - - */
 
-// TODO: check if suck movie already exist in DB
+// TODO: check if such movie already exist in DB
 
 // TODO: in delete mode - check if record could be deleted only by it's author
 
+// TODO: actions log
+
+// TODO: improve list showing UI
+
 // TODO: have some kind of priority or willing status
+
 // TODO: show topbar status while loading
 
 dotenv.config();
@@ -29,7 +34,7 @@ const connectionParams={
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true
-}
+};
 
 mongoose.connect(process.env.DB_URL, connectionParams)
   .catch((err) => console.error(`Error connecting to the database. \n${err}`))
@@ -120,12 +125,11 @@ bot.command('delete', async (ctx) => {
 
   try {
     await Movie.findByIdAndDelete(id);
-    ctx.replyWithHTML(`Record <i><b>${label}</b></i> has been removed`);
-    // showMovies(ctx);
+    await ctx.replyWithHTML(`Record <i><b>${label}</b></i> has been removed`);
   } catch {
     ctx.reply('Could not remove record');
   }
-};
+}
 
 bot.action(/delete/, deleteAction);
 
@@ -133,8 +137,22 @@ bot.action(/delete/, deleteAction);
 
 async function showMovies(ctx) {
   try {
-    const movies = await Movie.find();
-    return movies.forEach(({ label }) => ctx.reply(label))
+    const records = await Movie.find();
+
+    const recordsIterator = records.sort((a, b) => {
+      if(a.label < b.label) { return -1; }
+      if(a.label > b.label) { return 1; }
+      return 0;
+    }).map(({ label }, index) => ({ label, index }));
+
+    recordsIterator[Symbol.asyncIterator] = async function*() {
+      for (let i = 0; i < recordsIterator.length; i++) {
+        yield ctx.reply(`${recordsIterator[i].index + 1}. ${recordsIterator[i].label}`)
+      }
+      yield { done: true };
+    };
+
+    for await (const part of recordsIterator) {}
   } catch {
     ctx.reply('Could not make an action');
   }
@@ -145,7 +163,6 @@ bot.command('all', showMovies);
 /* - - - - - - - - - - - - - - - - - - - - */
 
 
-bot.launch()
+bot.launch();
 
 // ctx.reply("message", { reply_markup: { remove_keyboard: true}});
-  
