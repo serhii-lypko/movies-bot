@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import WizardScene from 'telegraf/scenes/wizard/index.js';
 
-const { Extra, session, Stage, Markup, BaseScene } = telegraf;
+const { Extra, session, Stage } = telegraf;
 
 /* - - - - - - - - - - - - - - - - - - - - */
 
@@ -11,24 +11,30 @@ const { Extra, session, Stage, Markup, BaseScene } = telegraf;
 
 // TODO: in delete mode - check if record could be deleted only by it's author
 
-// TODO: actions log
-
-// TODO: improve list showing UI
-
 // TODO: have some kind of priority or willing status
-
-// TODO: show topbar status while loading
 
 dotenv.config();
 
 /* - - - - - - - - - - - - - - - - - - - - */
+
+const ADD_ACTION = "ADD_ACTION";
+const DELETE_ACTION = "DELETE_ACTION";
 
 export const movieSchema = new mongoose.Schema({
   label: String,
   id: String
 });
 
+export const actionLogSchema = new mongoose.Schema({
+  type: String,
+  message: String,
+  date: Date,
+  id: String
+});
+
 const Movie = mongoose.model('movie', movieSchema);
+
+const ActionLog = mongoose.model('actionLog', actionLogSchema);
 
 const connectionParams={
   useNewUrlParser: true,
@@ -62,10 +68,6 @@ export const addMovieWizard = new WizardScene(
   async (ctx) => {
     const { text } = ctx.message;
 
-    // TODO: add cancel button to keyboard
-
-    // TODO: config file with texts
-
     if (text === "cancel" || text === "Cancel") {
       ctx.reply('Canceled');
       return ctx.scene.leave();
@@ -77,6 +79,11 @@ export const addMovieWizard = new WizardScene(
     }
 
     const movie = new Movie({ label: text });
+    const actionLog = new ActionLog({
+      type: ADD_ACTION,
+      message: `${ADD_ACTION}: ${text}`,
+      date: new Date()
+    });
 
     await movie.save(err => {
       if (err) {
@@ -85,8 +92,9 @@ export const addMovieWizard = new WizardScene(
       }
 
       ctx.replyWithHTML(`Record <i><b>${text}</b></i> has been saved`);
-      // showMovies(ctx);
     });
+
+    await actionLog.save();
 
     return ctx.scene.leave();
   },
@@ -123,9 +131,19 @@ bot.command('delete', async (ctx) => {
 
   const { label } = await Movie.findById(id);
 
+
   try {
     await Movie.findByIdAndDelete(id);
     await ctx.replyWithHTML(`Record <i><b>${label}</b></i> has been removed`);
+
+    const actionLog = new ActionLog({
+      type: DELETE_ACTION,
+      message: `${DELETE_ACTION}: ${label}`,
+      date: new Date()
+    });
+
+    await actionLog.save();
+
   } catch {
     ctx.reply('Could not remove record');
   }
